@@ -1,0 +1,106 @@
+CREATE TABLE conscript (
+  conscript_id INT PRIMARY KEY NOT NULL,
+  personal_file_id INT NOT NULL,
+  FOREIGN KEY (personal_file_id) REFERENCES personal_file (personal_file_id)
+);
+
+CREATE TABLE relative (
+  relative_id INT PRIMARY KEY NOT NULL,
+  personal_data_id INT NOT NULL,
+  FOREIGN KEY (personal_data_id) REFERENCES personal_data (personal_data_id)
+);
+
+CREATE TABLE personal_data (
+  personal_data_id INT PRIMARY KEY NOT NULL,
+  surname VARCHAR(40) NOT NULL,
+  name VARCHAR(15) NOT NULL,
+  patronymic VARCHAR(40) NULL,
+  date_of_birth DATE NOT NULL,
+  place_of_birth VARCHAR(255) NOT NULL,
+  place_of_registration_id INT NOT NULL,
+  nationality VARCHAR(50) NOT NULL,
+  criminal_record VARCHAR(4) NOT NULL,
+  family_type VARCHAR(50) NULL,
+  passport_data VARCHAR(10) NOT NULL,
+  gender VARCHAR(7) NOT NULL,
+  phone_number VARCHAR(11) NOT NULL,
+  FOREIGN KEY (place_of_registration_id) REFERENCES place_of_registration (place_of_registration_id)
+);
+
+CREATE TABLE place_of_registration (
+  place_of_registration_id INT PRIMARY KEY NOT NULL,
+  federal_district VARCHAR(50) NOT NULL,
+  area VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  street VARCHAR(50) NOT NULL,
+  house_number VARCHAR(5) NOT NULL,
+  fraction INT NULL,
+  flat INT NULL
+);
+
+CREATE TABLE personal_file (
+  personal_file_id INT PRIMARY KEY NOT NULL,
+  medical_report_id INT NOT NULL,
+  call_id INT NOT NULL,
+  military_service VARCHAR(4) NOT NULL,
+  military_ticket VARCHAR(20) NULL,
+  rank VARCHAR(25) NULL,
+  date_of_registration DATE NULL,
+  date_of_deregistration DATE NULL,
+  personal_data_id INT NOT NULL,
+  military_unit_id INT NOT NULL,
+  FOREIGN KEY (medical_report_id) REFERENCES medical_report (medical_report_id),
+  FOREIGN KEY (call_id) REFERENCES call (call_id),
+  FOREIGN KEY (personal_data_id) REFERENCES personal_data (personal_data_id),
+  FOREIGN KEY (military_unit_id) REFERENCES military_unit (military_unit_id)
+);
+
+CREATE TABLE medical_report (
+  medical_report_id INT PRIMARY KEY NOT NULL,
+  shelf_life_category VARCHAR(20) NOT NULL,
+  doctor VARCHAR(50) NOT NULL,
+  diagnosis VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE place_work (
+  place_work_id INT PRIMARY KEY NOT NULL,
+  name_organisation VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  field_activity VARCHAR(100) NOT NULL,
+  state_accreditation VARCHAR(20) NOT NULL,
+  personal_data_id INT NOT NULL,
+  FOREIGN KEY (personal_data_id) REFERENCES personal_data(personal_data_id)
+);
+
+CREATE TABLE place_study (
+  place_study_id INT PRIMARY KEY NOT NULL,
+  name_organisation VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  education_level VARCHAR(50) NOT NULL,
+  end_status VARCHAR(15) NULL,
+  personal_data_id INT NOT NULL,
+  FOREIGN KEY (personal_data_id) REFERENCES personal_data(personal_data_id)
+);
+
+CREATE TABLE kinship (
+  kinship_id INT PRIMARY KEY NOT NULL,
+  relative_id INT NOT NULL,
+  conscript_id INT NOT NULL,
+  degree_kinship VARCHAR(20) NOT NULL,
+  FOREIGN KEY (relative_id) REFERENCES relative (relative_id),
+  FOREIGN KEY (conscript_id) REFERENCES conscript (conscript_id)
+);
+
+CREATE TABLE call (
+  call_id INT PRIMARY KEY NOT NULL,
+  draft_date DATE NOT NULL,
+  place_of_call VARCHAR(255) NOT NULL,
+  season_name VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE military_unit (
+  military_unit_id INT PRIMARY KEY NOT NULL,
+  name_military_unit VARCHAR(255) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  type_troops VARCHAR(100) NOT NULL
+);
